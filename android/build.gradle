@@ -1,0 +1,56 @@
+group 'com.phonepe.pg.phonepe_gateway'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url  "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-snapshots"
+       }
+    }
+    
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.2'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url  "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-snapshots"
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 31
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+
+    dependencies {
+    implementation 'phonepe.intentsdk.android.snapshot:IntentSDK:releaseSDK-950892-SNAPSHOT'
+    implementation 'com.google.code.gson:gson:2.8.7'
+    }
+}
+
+dependencies {
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.5'
+}
+
+// dependencies {
+//     implementation project(path: ':app')
+// }
+
+
