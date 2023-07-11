@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phonepe_gateway/components/upi.dart';
+import 'package:toast/toast.dart';
+
 
 class PhonePeUI extends StatefulWidget {
   const PhonePeUI({super.key});
@@ -9,8 +11,11 @@ class PhonePeUI extends StatefulWidget {
 }
 
 class _PhonePeUIState extends State<PhonePeUI> {
+
   @override
   Widget build(BuildContext context) {
+  ToastContext().init(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

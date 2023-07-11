@@ -9,6 +9,7 @@ class MethodChannelPhonepeGateway extends PhonepeGatewayPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('phonepe_gateway');
+  // final methodChannel = const MethodChannel('phonepe_gateway');
 
   @override
   Future<String?> getPlatformVersion() async {
@@ -38,5 +39,17 @@ class MethodChannelPhonepeGateway extends PhonepeGatewayPlatform {
       "saltIndex": upiParams.saltIndex,
     });
     return version;
+  }
+
+  @override
+  Future payWIthIntent({
+    required String intentUrl,
+    String? packageName
+
+  }) async {
+     await methodChannel.invokeMethod('payWIthIntent', {
+      'intentUrl': intentUrl,
+      'packageName': packageName
+    });
   }
 }

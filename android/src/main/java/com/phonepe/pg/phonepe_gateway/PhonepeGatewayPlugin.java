@@ -4,6 +4,7 @@ package com.phonepe.pg.phonepe_gateway;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -104,7 +105,7 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
 
                   HashMap<String, Object> data = new HashMap();
                   data.put("merchantTransactionId", call.argument("merchantTransactionId"));        //String. Mandatory
-                  data.put("merchantId", "VOICECLUBONLINE");             //String. Mandatory
+                  data.put("merchantId", "PGTESTPAYUAT148");             //String. Mandatory
                   data.put("merchantUserId",call.argument("merchantUserId"));             //String. Conditional
 
 
@@ -135,31 +136,48 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
 
                   String checksum = bytesToHex(encodedhash) + "###" + call.argument("saltIndex");
 
-                  B2BPGRequest b2BPGRequest = new B2BPGRequestBuilder()
-                          .setData(base64Body)
-                          .setChecksum(checksum)
-                          .setUrl(apiEndPoint)
-                          .build();
+//                  B2BPGRequest b2BPGRequest = new B2BPGRequestBuilder()
+//                          .setData(base64Body)
+//                          .setChecksum(checksum)
+//                          .setUrl(apiEndPoint)
+//                          .build();
+                          String string_signature = PhonePe.getPackageSignature();
+                  PhonePeService apiInstance = new PhonePeService();
+                  apiInstance.callIntent();
+
+                  Log.d("DEBUG", string_signature);
                   Log.d("DEBUG", checksum);
                   Log.d("DEBUG", base64Body);
-
+                  JSONObject response = new  JSONObject();
+                  response.put("status", true);
+                  response.put("checksum", checksum);
+                  response.put("base64Body", base64Body);
+                  response.put("packageName", call.argument("packageName"));
+                  result.success(response.toString());
                   //For SDK call below function
-                  try {
-                      activity.startActivityForResult(PhonePe.getImplicitIntent(this.context, b2BPGRequest, call.argument("packageName")), B2B_PG_REQUEST_CODE);
-                  } catch (PhonePeInitException e) {
-                      Log.d("DEBUG", "======================================================");
-                      Log.d("DEBUG", e.toString());
+                         //APP_PACKAGE will be the package name of the App selected by the user.
 
-                      Log.d("DEBUG", "======================================================");
-                  }
+// To Initiate Payment.
 
 
               } catch (NoSuchAlgorithmException exception) {
 
                   exception.printStackTrace();
 
+              } catch (JSONException e) {
+                  throw new RuntimeException(e);
               }
               break;
+          case "payWIthIntent": {
+              Log.d("DEBUG",call.arguments().toString());
+              Intent intent = new Intent();
+              intent.setAction(Intent.ACTION_VIEW);
+              intent.setData( Uri.parse("upi://pay?pa=PGTESTPAYUAT148@ybl&pn=MERCHANT&am=1000&mam=1000&tr=1688994155229126&tn=Payment%20for%201688994155229126&mc=5311&mode=04&purpose=00&utm_campaign=B2B_PG&utm_medium=PGTESTPAYUAT148&utm_source=1688994155229126&mcbs=null"));    //PhonePe Intent redirectUrl from the response.
+              intent.setPackage(call.argument("packageName"));
+              activity.startActivityForResult(intent,B2B_PG_REQUEST_CODE);
+
+          }
+          break;
           default:
               result.notImplemented();
               break;
@@ -187,7 +205,7 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         // Handle the result of the activity here
-
+Log.d("DEBUG", data.toString());
         if (requestCode == B2B_PG_REQUEST_CODE) {
             // Process the result
             // Handle success
@@ -223,6 +241,7 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
     public void onDetachedFromActivity() {
         activity = null;
     }
+
 
 
 
