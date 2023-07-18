@@ -42,12 +42,12 @@ class MethodChannelPhonepeGateway extends PhonepeGatewayPlatform {
   }
 
   @override
-  Future payWIthIntent({
+  Future<String?> payWIthIntent({
     required String intentUrl,
     String? packageName
 
   }) async {
-     await methodChannel.invokeMethod('payWIthIntent', {
+   return await methodChannel.invokeMethod('payWIthIntent', {
       'intentUrl': intentUrl,
       'packageName': packageName
     });

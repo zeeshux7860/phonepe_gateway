@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -14,8 +15,6 @@ import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.phonepe.intent.sdk.api.B2BPGRequest;
-import com.phonepe.intent.sdk.api.B2BPGRequestBuilder;
 import com.phonepe.intent.sdk.api.PhonePe;
 import com.phonepe.intent.sdk.api.PhonePeInitException;
 import com.phonepe.intent.sdk.api.UPIApplicationInfo;
@@ -64,6 +63,8 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
   }
 
   String apiEndPoint = "/pg/v1/pay";
+    private MethodChannel.Result pendingResult;
+
 
   @RequiresApi(api = Build.VERSION_CODES.O)
   @Override
@@ -105,7 +106,7 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
 
                   HashMap<String, Object> data = new HashMap();
                   data.put("merchantTransactionId", call.argument("merchantTransactionId"));        //String. Mandatory
-                  data.put("merchantId", "PGTESTPAYUAT148");             //String. Mandatory
+                  data.put("merchantId", "VOICECLUBONLINE");             //String. Mandatory
                   data.put("merchantUserId",call.argument("merchantUserId"));             //String. Conditional
 
 
@@ -136,14 +137,8 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
 
                   String checksum = bytesToHex(encodedhash) + "###" + call.argument("saltIndex");
 
-//                  B2BPGRequest b2BPGRequest = new B2BPGRequestBuilder()
-//                          .setData(base64Body)
-//                          .setChecksum(checksum)
-//                          .setUrl(apiEndPoint)
-//                          .build();
                           String string_signature = PhonePe.getPackageSignature();
                   PhonePeService apiInstance = new PhonePeService();
-                  apiInstance.callIntent();
 
                   Log.d("DEBUG", string_signature);
                   Log.d("DEBUG", checksum);
@@ -172,10 +167,14 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
               Log.d("DEBUG",call.arguments().toString());
               Intent intent = new Intent();
               intent.setAction(Intent.ACTION_VIEW);
-              intent.setData( Uri.parse("upi://pay?pa=PGTESTPAYUAT148@ybl&pn=MERCHANT&am=1000&mam=1000&tr=1688994155229126&tn=Payment%20for%201688994155229126&mc=5311&mode=04&purpose=00&utm_campaign=B2B_PG&utm_medium=PGTESTPAYUAT148&utm_source=1688994155229126&mcbs=null"));    //PhonePe Intent redirectUrl from the response.
+              intent.setData( Uri.parse(call.argument("intentUrl")));    //PhonePe Intent redirectUrl from the response.
               intent.setPackage(call.argument("packageName"));
+              pendingResult = result;
               activity.startActivityForResult(intent,B2B_PG_REQUEST_CODE);
+              Log.d("DEBUG", "ok");
 
+//              activity.
+//                activity.getIntent().
           }
           break;
           default:
@@ -204,8 +203,24 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+//        pendingResult.success("OK");
         // Handle the result of the activity here
-Log.d("DEBUG", data.toString());
+Log.d("DEBUG", String.valueOf(resultCode));
+Log.d("DEBUG", String.valueOf(resultCode));
+// null check for the intent
+        if (data != null) {
+            // do your stuff here
+            Log.d("DEBUG", String.valueOf(pendingResult == null));
+            // has extra
+            if (data != null && data.getExtras() != null) {
+                Bundle extras = data.getExtras();
+//Log.d("DEBUG", convertBundleToJson(extras));
+pendingResult.success(convertBundleToJson(extras));
+                // You can also iterate over the keys if you need to perform specific operations
+
+            }
+
+        }
         if (requestCode == B2B_PG_REQUEST_CODE) {
             // Process the result
             // Handle success
@@ -243,6 +258,31 @@ Log.d("DEBUG", data.toString());
     }
 
 
-
+    public static String convertBundleToJson(Bundle bundle) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            for (String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                if (value instanceof Boolean) {
+                    jsonObject.put(key, (Boolean) value);
+                } else if (value instanceof Integer) {
+                    jsonObject.put(key, (Integer) value);
+                } else if (value instanceof Long) {
+                    jsonObject.put(key, (Long) value);
+                } else if (value instanceof Double) {
+                    jsonObject.put(key, (Double) value);
+                } else if (value instanceof String) {
+                    jsonObject.put(key, (String) value);
+                } else if (value instanceof Bundle) {
+                    // If the value is a nested Bundle, convert it to JSONObject recursively
+                    jsonObject.put(key, new JSONObject(convertBundleToJson((Bundle) value)));
+                }
+                // You can add more conditions based on your specific needs
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
 
 }

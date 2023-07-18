@@ -74,10 +74,10 @@ class _UpiWidgetState extends State<UpiWidget> {
                               ),
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(5),
-                                onTap: () {
-                                  _phonepeGatewayPlugin.payWIthUpi(
+                                onTap: () async {
+                                 var data = await  _phonepeGatewayPlugin.payWIthUpi(
                                       upiParams: UpiParams(
-                                          amount: 1000,
+                                          amount: 100,
                                           callbackUrl:
                                               "https://webhook.site/dede1e1a-70cc-43ee-ad22-1ee60d574c9d",
                                           merchantTransactionId:
@@ -86,8 +86,9 @@ class _UpiWidgetState extends State<UpiWidget> {
                                           mobileNumber: "9088226981",
                                           packageName: value.packageName,
                                           salt:
-                                              "046d9f63-bf3b-4b74-9b8e-93121160573e",
+                                              "a9e8cbaf-c914-48ec-80db-3b9f19e745f1",
                                           saltIndex: 1));
+                                  print(data.status);
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

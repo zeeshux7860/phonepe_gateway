@@ -38,7 +38,7 @@ abstract class PhonepeGatewayPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-    Future payWIthIntent({
+    Future<String?> payWIthIntent({
     required String intentUrl,
     String? packageName
   }) {
