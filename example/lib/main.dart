@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:convert';
 
-import 'package:flutter/services.dart';
-import 'package:phonepe_gateway/phonepe_gateway.dart';
+import 'package:flutter/material.dart';
+
+import 'package:phonepe_gateway/model/phonepe_config.dart';
+import 'package:phonepe_gateway/model/phonepe_params_upi.dart';
 import 'package:phonepe_gateway/phonepe_ui.dart';
 
 void main() {
@@ -17,43 +18,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _phonepeGatewayPlugin = PhonepeGateway();
-
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion = await _phonepeGatewayPlugin.getPlatformVersion() ??
-          'Unknown platform version';
-
-      // var ok = await _phonepeGatewayPlugin.getUpi();
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const PayUI(),
+    return const MaterialApp(
+      home: PayUI(),
     );
   }
 }
@@ -66,7 +39,36 @@ class PayUI extends StatefulWidget {
 }
 
 class _PayUIState extends State<PayUI> {
-  final _phonepeGatewayPlugin = PhonepeGateway();
+  // final _phonepeGatewayPlugin = PhonepeGateway();
+  @override
+  void initState() {
+    PhonpePaymentGateway.instance.init(
+        config: PhonePeConfig(
+            baseUrl: "http://43.204.12.176/test",
+            appName: "VoiceClub",
+            callBackUrl:
+                "https://webhook.site/845cb8cc-5d74-4494-95ea-3003c9c518ab",
+            merchanId: "VOICECLUBONLINE",
+            saltIndex: 1,
+            saltKey: "a9e8cbaf-c914-48ec-80db-3b9f19e745f1"));
+    PhonpePaymentGateway.instance.handlerCancelled(
+      (value) {
+        debugPrint("Cancelled :${jsonEncode(value.toJson())}");
+      },
+    );
+    PhonpePaymentGateway.instance.handlerFailed(
+      (value) {
+        debugPrint("Failed :${jsonEncode(value.toJson())}");
+      },
+    );
+
+    PhonpePaymentGateway.instance.handlerSuccess(
+      (value) {
+        debugPrint("Success :${jsonEncode(value.toJson())}");
+      },
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +78,20 @@ class _PayUIState extends State<PayUI> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            _phonepeGatewayPlugin.init(context);
+            PhonpePaymentGateway.instance.initPayment(context,
+                params: ParamsPayment(
+                    amount: 0.1,
+                    merchantTransactionId:
+                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    merchantUserId: "1234567890",
+                    mobileNumber: "1234567890",
+                    notes: {
+                      "uid": "1234567890",
+                      "name": "Test User",
+                      "email": "example#example.com"
+                    }));
           },
           child: const Icon(Icons.add),
         ));
   }
 }
-
-
