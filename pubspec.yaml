@@ -1,5 +1,5 @@
 name: phonepe_gateway
-description: A new Flutter plugin project.
+description: The provided code is a Flutter application that attempts to integrate the "PhonePe" payment gateway for processing payments.
 version: 0.0.1+beta
 homepage: https://github.com/zeeshux7860/phonepe_gateway.git
 

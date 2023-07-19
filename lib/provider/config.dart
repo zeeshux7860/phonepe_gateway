@@ -84,6 +84,8 @@ class PhonpePaymentGateway {
   // dispose stream controller
   void dispose() {
     _controllerCancelled.close();
+    _controllerFailed.close();
+    _controllerSuccess.close();
   }
 
   /// [initPayment] is used to init payment
