@@ -69,7 +69,7 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
   @RequiresApi(api = Build.VERSION_CODES.O)
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    Log.d("DEBUG", call.method);
+//    Log.d("DEBUG", call.method);
       switch (call.method) {
           case "getPlatformVersion":
               System.out.print("Android " + Build.VERSION.RELEASE);
@@ -102,11 +102,10 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
               break;
           case "payWIthUpi":
               try {
-                  Log.d("DEBUG", call.argument("salt"));
 
                   HashMap<String, Object> data = new HashMap();
                   data.put("merchantTransactionId", call.argument("merchantTransactionId"));        //String. Mandatory
-                  data.put("merchantId", "VOICECLUBONLINE");             //String. Mandatory
+                  data.put("merchantId", call.argument("merchantId"));             //String. Mandatory
                   data.put("merchantUserId",call.argument("merchantUserId"));             //String. Conditional
 
 
@@ -140,9 +139,9 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
                           String string_signature = PhonePe.getPackageSignature();
                   PhonePeService apiInstance = new PhonePeService();
 
-                  Log.d("DEBUG", string_signature);
-                  Log.d("DEBUG", checksum);
-                  Log.d("DEBUG", base64Body);
+//                  Log.d("DEBUG", string_signature);
+//                  Log.d("DEBUG", checksum);
+//                  Log.d("DEBUG", base64Body);
                   JSONObject response = new  JSONObject();
                   response.put("status", true);
                   response.put("checksum", checksum);
@@ -163,15 +162,18 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
                   throw new RuntimeException(e);
               }
               break;
+          case "payWithCard":
+              JSONObject data = Cards.details( call);
+              result.success(data.toString());
+              break;
           case "payWIthIntent": {
-              Log.d("DEBUG",call.arguments().toString());
+//              Log.d("DEBUG",call.arguments().toString());
               Intent intent = new Intent();
               intent.setAction(Intent.ACTION_VIEW);
               intent.setData( Uri.parse(call.argument("intentUrl")));    //PhonePe Intent redirectUrl from the response.
               intent.setPackage(call.argument("packageName"));
               pendingResult = result;
               activity.startActivityForResult(intent,B2B_PG_REQUEST_CODE);
-              Log.d("DEBUG", "ok");
 
 //              activity.
 //                activity.getIntent().
@@ -205,12 +207,10 @@ public class PhonepeGatewayPlugin implements FlutterPlugin, MethodCallHandler, A
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 //        pendingResult.success("OK");
         // Handle the result of the activity here
-Log.d("DEBUG", String.valueOf(resultCode));
-Log.d("DEBUG", String.valueOf(resultCode));
+
 // null check for the intent
         if (data != null) {
             // do your stuff here
-            Log.d("DEBUG", String.valueOf(pendingResult == null));
             // has extra
             if (data != null && data.getExtras() != null) {
                 Bundle extras = data.getExtras();

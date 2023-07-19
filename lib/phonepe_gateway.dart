@@ -7,6 +7,8 @@ import 'package:phonepe_gateway/model/upi.dart';
 import 'package:phonepe_gateway/phonepe_ui.dart';
 import 'package:toast/toast.dart';
 import "package:http/http.dart" as http;
+import 'model/phonepe_params_card.dart';
+import 'model/phonepe_params_upi.dart';
 import 'phonepe_gateway_platform_interface.dart';
 
 class PhonepeGateway {
@@ -27,36 +29,7 @@ class PhonepeGateway {
         await PhonepeGatewayPlatform.instance.payWIthUpi(upiParams: upiParams);
     HashRequest hashRequest = HashRequest.fromJson(jsonDecode(data));
     if (hashRequest.status == true) {
-      var response = await http.post(Uri.parse("http://43.204.12.176/test"),
-          headers: {
-            "X-VERIFY": hashRequest.checksum!,
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: json.encode({
-            "request": hashRequest.base64Body,
-          }));
-      // print("==================================");
-      // print(response.body);
-      // print("==================================");
-      HashResponse hashResponse =
-          HashResponse.fromJson(jsonDecode(response.body));
-      if (hashResponse.success == true) {
-        // await init(upiParams.context);
-        Toast.show(hashResponse.message!,
-            duration: Toast.lengthShort, gravity: Toast.bottom);
-        var data = await PhonepeGatewayPlatform.instance.payWIthIntent(
-            intentUrl: hashResponse.data!.instrumentResponse!.intentUrl!,
-            packageName: hashRequest.packageName);
-        return PaymentMethod.fromJson(jsonDecode(data!));
-      } else {
-        Toast.show(hashResponse.message!,
-            duration: Toast.lengthShort, gravity: Toast.bottom);
-        return PaymentMethod.fromJson({
-          "Status": "Failed",
-          "Message": hashResponse.message,
-        });
-      }
+      return paymentComplete(hashRequest);
     } else {
       Toast.show("Something went to wrongs",
           duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -67,8 +40,59 @@ class PhonepeGateway {
     }
   }
 
-  Future init(BuildContext context) async {
-    await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const PhonePeUI()));
+  Future init(BuildContext context, ParamsPayment params) async {
+    await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PhonePeUI(
+              params: params,
+            )));
+  }
+
+  Future<PaymentMethod> payWithCard({
+    required CardParams cardParams,
+  }) async {
+    var data = await PhonepeGatewayPlatform.instance
+        .payWithCard(upiParams: cardParams);
+    HashRequest hashRequest = HashRequest.fromJson(jsonDecode(data!));
+    if (hashRequest.status == true) {
+      return paymentComplete(hashRequest);
+    } else {
+      Toast.show("Something went to wrongs",
+          duration: Toast.lengthShort, gravity: Toast.bottom);
+      return PaymentMethod.fromJson({
+        "Status": "Failed",
+        "Message": "Something went to wrongs",
+      });
+    }
+  }
+
+  Future<PaymentMethod> paymentComplete(HashRequest hashRequest) async {
+    var response = await http.post(
+        Uri.parse(PhonpePaymentGateway.instance.phonePeConfig.baseUrl!),
+        headers: {
+          "X-VERIFY": hashRequest.checksum!,
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: json.encode({
+          "request": hashRequest.base64Body,
+        }));
+    HashResponse hashResponse =
+        HashResponse.fromJson(jsonDecode(response.body));
+    if (hashResponse.success == true) {
+      // await init(upiParams.context);
+      Toast.show(hashResponse.message!,
+          duration: Toast.lengthShort, gravity: Toast.bottom);
+      var data = await PhonepeGatewayPlatform.instance.payWIthIntent(
+          intentUrl: hashResponse.data!.instrumentResponse!.intentUrl!,
+          packageName: hashRequest.packageName);
+      return PaymentMethod.fromJson(jsonDecode(data!));
+    } else {
+      Toast.show(hashResponse.message!,
+          duration: Toast.lengthShort, gravity: Toast.bottom);
+      return PaymentMethod.fromJson({
+        "Status": "Failed",
+        "Message": hashResponse.message,
+      });
+    }
   }
 }

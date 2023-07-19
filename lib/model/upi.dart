@@ -51,6 +51,7 @@ class UpiParams {
   String? packageName;
   String? merchantTransactionId;
   String? merchantUserId;
+  String? merchantId;
   int? amount;
   String? mobileNumber;
   String? callbackUrl;
@@ -61,6 +62,7 @@ class UpiParams {
       {this.packageName,
       this.merchantTransactionId,
       this.merchantUserId,
+      this.merchantId,
       this.amount,
       this.mobileNumber,
       this.callbackUrl,
@@ -71,6 +73,7 @@ class UpiParams {
     packageName = json['packageName'];
     merchantTransactionId = json['merchantTransactionId'];
     merchantUserId = json['merchantUserId'];
+    merchantId = json['merchantId'];
     amount = json['amount'];
     mobileNumber = json['mobileNumber'];
     callbackUrl = json['callbackUrl'];
@@ -83,6 +86,7 @@ class UpiParams {
     data['packageName'] = packageName;
     data['merchantTransactionId'] = merchantTransactionId;
     data['merchantUserId'] = merchantUserId;
+    data['merchantId'] = merchantId;
     data['amount'] = amount;
     data['mobileNumber'] = mobileNumber;
     data['callbackUrl'] = callbackUrl;

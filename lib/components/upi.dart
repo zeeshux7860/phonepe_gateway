@@ -1,13 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:installed_apps/installed_apps.dart';
+import 'package:phonepe_gateway/model/payment_complete.dart';
+import 'package:phonepe_gateway/model/phonepe_params_upi.dart';
 import 'package:phonepe_gateway/model/upi.dart';
 import 'package:phonepe_gateway/phonepe_gateway.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:toast/toast.dart';
+
+import '../provider/config.dart';
 
 class UpiWidget extends StatefulWidget {
-  const UpiWidget({super.key});
+  final ParamsPayment paramsUpi;
+  const UpiWidget({super.key, required this.paramsUpi});
 
   @override
   State<UpiWidget> createState() => _UpiWidgetState();
@@ -24,6 +29,10 @@ class _UpiWidgetState extends State<UpiWidget> {
       });
     });
     super.initState();
+  }
+
+  void back() {
+    Navigator.pop(context);
   }
 
   @override
@@ -46,7 +55,7 @@ class _UpiWidgetState extends State<UpiWidget> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    child: Text('PhonePe'),
+                    child: const Text('PhonePe'),
                   );
                 },
               ),
@@ -75,20 +84,7 @@ class _UpiWidgetState extends State<UpiWidget> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(5),
                                 onTap: () async {
-                                 var data = await  _phonepeGatewayPlugin.payWIthUpi(
-                                      upiParams: UpiParams(
-                                          amount: 100,
-                                          callbackUrl:
-                                              "https://webhook.site/dede1e1a-70cc-43ee-ad22-1ee60d574c9d",
-                                          merchantTransactionId:
-                                              DateTime.now().microsecondsSinceEpoch.toString(),
-                                          merchantUserId: "90223250",
-                                          mobileNumber: "9088226981",
-                                          packageName: value.packageName,
-                                          salt:
-                                              "a9e8cbaf-c914-48ec-80db-3b9f19e745f1",
-                                          saltIndex: 1));
-                                  print(data.status);
+                                  sendRequest(value);
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +97,7 @@ class _UpiWidgetState extends State<UpiWidget> {
                                     ),
                                     Text(
                                       value.applicationName!,
-                                      style: TextStyle(fontSize: 11),
+                                      style: const TextStyle(fontSize: 11),
                                     ),
                                   ],
                                 ),
@@ -111,6 +107,77 @@ class _UpiWidgetState extends State<UpiWidget> {
               },
             ),
           );
+  }
+
+  Future<void> sendRequest(ListOfUpi value) async {
+    Uri maptoConvertUri;
+
+    if (widget.paramsUpi.notes != null) {
+      maptoConvertUri = Uri(queryParameters: widget.paramsUpi.notes!);
+    } else {
+      maptoConvertUri = Uri(queryParameters: {});
+    }
+    var data = await _phonepeGatewayPlugin.payWIthUpi(
+        upiParams: UpiParams(
+            amount: (widget.paramsUpi.amount! * 100).toInt(),
+            callbackUrl:
+                "${PhonpePaymentGateway.instance.phonePeConfig.callBackUrl}?${maptoConvertUri.query}",
+            merchantTransactionId: widget.paramsUpi.merchantTransactionId,
+            merchantUserId: widget.paramsUpi.merchantUserId,
+            mobileNumber: widget.paramsUpi.mobileNumber,
+            packageName: value.packageName,
+            merchantId: PhonpePaymentGateway.instance.phonePeConfig.merchanId,
+            salt: PhonpePaymentGateway.instance.phonePeConfig.saltKey,
+            saltIndex: PhonpePaymentGateway.instance.phonePeConfig.saltIndex!
+                .toInt()));
+
+    if (data.status == "SUCCESS") {
+      back();
+      Toast.show("Payment Successfull",
+          duration: Toast.lengthShort, gravity: Toast.bottom);
+      PhonpePaymentGateway.instance.successPayment(data);
+    } else {
+      // failed payment alert
+
+      if (data.message == null) {
+        if (data.status == "FAILURE") {
+          Toast.show("Payment $data.status",
+              duration: Toast.lengthShort, gravity: Toast.bottom);
+          PhonpePaymentGateway.instance.failedPayment(PaymentMethod(
+            status: data.status,
+            message: "Payment ${data.status}",
+          ));
+          back();
+        } else {
+          Toast.show("Payment Cancelled",
+              duration: Toast.lengthShort, gravity: Toast.bottom);
+          PhonpePaymentGateway.instance.failedPayment(PaymentMethod(
+            status: "Cancelled",
+            message: "Payment Cancelled",
+          ));
+          back();
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Payment Failed"),
+                content: Text(data.message.toString()),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        // Navigator.pop(context);
+                      },
+                      child: const Text("Ok"))
+                ],
+              );
+            });
+        PhonpePaymentGateway.instance.failedPayment(data);
+      }
+    }
   }
 
   Future<Uint8List> getIcon(String packageName) async {

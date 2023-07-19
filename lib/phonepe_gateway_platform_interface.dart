@@ -1,6 +1,7 @@
 import 'package:phonepe_gateway/model/upi.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'model/phonepe_params_card.dart';
 import 'phonepe_gateway_method_channel.dart';
 
 abstract class PhonepeGatewayPlatform extends PlatformInterface {
@@ -38,10 +39,14 @@ abstract class PhonepeGatewayPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-    Future<String?> payWIthIntent({
-    required String intentUrl,
-    String? packageName
+  Future<String?> payWithCard({
+    required CardParams upiParams,
   }) {
+    throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  Future<String?> payWIthIntent(
+      {required String intentUrl, String? packageName}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

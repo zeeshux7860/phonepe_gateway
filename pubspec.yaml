@@ -1,7 +1,7 @@
 name: phonepe_gateway
 description: A new Flutter plugin project.
-version: 0.0.1
-homepage:
+version: 0.0.1+beta
+homepage: https://github.com/zeeshux7860/phonepe_gateway.git
 
 environment:
   sdk: '>=2.18.5 <3.0.0'
@@ -15,7 +15,9 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   shimmer: ^3.0.0
   toast: ^0.3.0
-
+  flutter_svg: 
+  pointycastle: ^3.7.3
+  provider: ^6.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -43,8 +45,9 @@ flutter:
         pluginClass: PhonepeGatewayPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/icons/
+    - assets/images/
   #   - images/a_dot_ham.jpeg
   #
   # For details regarding assets in packages, see
