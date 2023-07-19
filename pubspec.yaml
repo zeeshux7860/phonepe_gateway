@@ -15,7 +15,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   shimmer: ^3.0.0
   toast: ^0.3.0
-  flutter_svg: 
+  flutter_svg: ^1.1.6
   pointycastle: ^3.7.3
   provider: ^6.0.5
 dev_dependencies:

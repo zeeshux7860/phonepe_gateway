@@ -44,13 +44,13 @@ class _PayUIState extends State<PayUI> {
   void initState() {
     PhonpePaymentGateway.instance.init(
         config: PhonePeConfig(
-            baseUrl: "http://43.204.12.176/test",
-            appName: "VoiceClub",
+            baseUrl: "http://127.0.0.1/test",
+            appName: "PhonePe Test App",
             callBackUrl:
                 "https://webhook.site/845cb8cc-5d74-4494-95ea-3003c9c518ab",
-            merchanId: "VOICECLUBONLINE",
+            merchanId: "Test",
             saltIndex: 1,
-            saltKey: "a9e8cbaf-c914-48ec-80db-3b9f19e745f1"));
+            saltKey: "test"));
     PhonpePaymentGateway.instance.handlerCancelled(
       (value) {
         debugPrint("Cancelled :${jsonEncode(value.toJson())}");
