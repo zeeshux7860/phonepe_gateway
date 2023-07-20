@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:phonepe_gateway/model/phonepe_config.dart';
 import 'package:phonepe_gateway/model/phonepe_params_upi.dart';
 import 'package:phonepe_gateway/phonepe_ui.dart';
+import 'package:phonepe_gateway/web_view/view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,13 +45,15 @@ class _PayUIState extends State<PayUI> {
   void initState() {
     PhonpePaymentGateway.instance.init(
         config: PhonePeConfig(
+            redirectUrl:
+                "https://typedwebhook.tools/webhook/09977847-b2f5-4b46-acc0-e3125301e94d",
             baseUrl: "http://127.0.0.1/test",
             appName: "PhonePe Test App",
             callBackUrl:
                 "https://webhook.site/845cb8cc-5d74-4494-95ea-3003c9c518ab",
-            merchanId: "Test",
+            merchanId: "************",
             saltIndex: 1,
-            saltKey: "test"));
+            saltKey: "********-****-****-****-***********"));
     PhonpePaymentGateway.instance.handlerCancelled(
       (value) {
         debugPrint("Cancelled :${jsonEncode(value.toJson())}");
@@ -80,7 +83,7 @@ class _PayUIState extends State<PayUI> {
           onPressed: () async {
             PhonpePaymentGateway.instance.initPayment(context,
                 params: ParamsPayment(
-                    amount: 0.1,
+                    amount: 1,
                     merchantTransactionId:
                         DateTime.now().millisecondsSinceEpoch.toString(),
                     merchantUserId: "1234567890",
