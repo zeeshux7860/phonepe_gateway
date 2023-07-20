@@ -5,6 +5,7 @@ class PhonePeConfig {
   num? saltIndex;
   String? appName;
   String? merchanId;
+  String? redirectUrl;
 
   PhonePeConfig(
       {this.callBackUrl,
@@ -12,7 +13,8 @@ class PhonePeConfig {
       this.saltKey,
       this.saltIndex,
       this.appName,
-      this.merchanId});
+      this.merchanId,
+      this.redirectUrl});
 
   PhonePeConfig.fromJson(Map<String, dynamic> json) {
     callBackUrl = json['callBackUrl'];
@@ -21,6 +23,7 @@ class PhonePeConfig {
     saltIndex = json['saltIndex'];
     appName = json['appName'];
     merchanId = json['merchanId'];
+    redirectUrl = json['redirectUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +34,7 @@ class PhonePeConfig {
     data['saltIndex'] = saltIndex;
     data['appName'] = appName;
     data['merchanId'] = merchanId;
+    data['redirectUrl'] = redirectUrl;
     return data;
   }
 }

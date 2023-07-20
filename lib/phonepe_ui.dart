@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:phonepe_gateway/components/card.dart';
 import 'package:phonepe_gateway/components/upi.dart';
 import 'package:phonepe_gateway/model/phonepe_params_upi.dart';
@@ -117,7 +118,7 @@ class _PhonePeUIState extends State<PhonePeUI> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  "Card Transactions",
+                  "Card & Netbanking",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

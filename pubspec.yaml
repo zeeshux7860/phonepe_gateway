@@ -18,6 +18,8 @@ dependencies:
   flutter_svg: ^1.1.6
   pointycastle: ^3.7.3
   provider: ^6.0.5
+  webview_flutter: ^4.2.2
+  get: ^4.6.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

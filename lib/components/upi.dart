@@ -130,8 +130,7 @@ class _UpiWidgetState extends State<UpiWidget> {
             salt: PhonpePaymentGateway.instance.phonePeConfig.saltKey,
             saltIndex: PhonpePaymentGateway.instance.phonePeConfig.saltIndex!
                 .toInt()));
-
-    if (data.status == "SUCCESS") {
+    if (data.status == "Success") {
       back();
       Toast.show("Payment Successfull",
           duration: Toast.lengthShort, gravity: Toast.bottom);

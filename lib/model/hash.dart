@@ -4,7 +4,7 @@ class HashRequest {
   String? base64Body;
   String? packageName;
 
-  HashRequest({this.status, this.checksum, this.base64Body,this.packageName});
+  HashRequest({this.status, this.checksum, this.base64Body, this.packageName});
 
   HashRequest.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -22,7 +22,6 @@ class HashRequest {
     return data;
   }
 }
-
 
 class HashResponse {
   bool? success;
@@ -80,18 +79,44 @@ class Data {
 class InstrumentResponse {
   String? type;
   String? intentUrl;
+  RedirectInfo? redirectInfo;
 
-  InstrumentResponse({this.type, this.intentUrl});
+  InstrumentResponse({this.type, this.intentUrl, this.redirectInfo});
 
   InstrumentResponse.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     intentUrl = json['intentUrl'];
+    redirectInfo = json['redirectInfo'] != null
+        ? RedirectInfo.fromJson(json['redirectInfo'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['type'] = type;
     data['intentUrl'] = intentUrl;
+    if (redirectInfo != null) {
+      data['redirectInfo'] = redirectInfo!.toJson();
+    }
+    return data;
+  }
+}
+
+class RedirectInfo {
+  String? url;
+  String? method;
+
+  RedirectInfo({this.url, this.method});
+
+  RedirectInfo.fromJson(Map<String, dynamic> json) {
+    url = json['url'];
+    method = json['method'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['url'] = url;
+    data['method'] = method;
     return data;
   }
 }

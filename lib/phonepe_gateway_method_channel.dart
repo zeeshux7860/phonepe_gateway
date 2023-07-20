@@ -55,11 +55,6 @@ class MethodChannelPhonepeGateway extends PhonepeGatewayPlatform {
     required CardParams upiParams,
   }) async {
     final version = await methodChannel.invokeMethod('payWithCard', {
-      "cardNumber": upiParams.cardDetails!.cardNumber,
-      "cardExpiryMonth": upiParams.cardDetails!.cardExpiryMonth,
-      "cardExpiryYear": upiParams.cardDetails!.cardExpiryYear,
-      "cardCvv": upiParams.cardDetails!.cardCvv,
-      "cardHolderName": upiParams.cardDetails!.cardHolderName,
       "merchantTransactionId": upiParams.merchantTransactionId,
       "merchantUserId": upiParams.merchantUserId,
       "merchantId": upiParams.merchantId,
@@ -68,6 +63,8 @@ class MethodChannelPhonepeGateway extends PhonepeGatewayPlatform {
       "callbackUrl": upiParams.callbackUrl,
       "salt": upiParams.salt,
       "saltIndex": upiParams.saltIndex,
+      "redirectUrl": upiParams.redirectUrl,
+      "redirectMode": upiParams.redirectMode,
     });
     return version;
   }

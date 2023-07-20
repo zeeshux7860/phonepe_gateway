@@ -1,5 +1,4 @@
 class CardParams {
-  CardDetails? cardDetails;
   String? merchantTransactionId;
   String? merchantUserId;
   String? merchantId;
@@ -8,22 +7,22 @@ class CardParams {
   String? callbackUrl;
   String? salt;
   String? saltIndex;
+  String? redirectUrl;
+  String? redirectMode;
 
   CardParams(
-      {this.cardDetails,
-      this.merchantTransactionId,
+      {this.merchantTransactionId,
       this.merchantUserId,
       this.merchantId,
       this.amount,
       this.mobileNumber,
       this.callbackUrl,
       this.salt,
-      this.saltIndex});
+      this.saltIndex,
+      this.redirectUrl,
+      this.redirectMode});
 
   CardParams.fromJson(Map<String, dynamic> json) {
-    cardDetails = json['card_details'] != null
-        ? CardDetails.fromJson(json['card_details'])
-        : null;
     merchantTransactionId = json['merchantTransactionId'];
     merchantUserId = json['merchantUserId'];
     merchantId = json['merchantId'];
@@ -32,13 +31,12 @@ class CardParams {
     callbackUrl = json['callbackUrl'];
     salt = json['salt'];
     saltIndex = json['saltIndex'];
+    redirectUrl = json['redirectUrl'];
+    redirectMode = json['redirectMode'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (cardDetails != null) {
-      data['card_details'] = cardDetails!.toJson();
-    }
     data['merchantTransactionId'] = merchantTransactionId;
     data['merchantUserId'] = merchantUserId;
     data['merchantId'] = merchantId;
@@ -47,39 +45,8 @@ class CardParams {
     data['callbackUrl'] = callbackUrl;
     data['salt'] = salt;
     data['saltIndex'] = saltIndex;
-    return data;
-  }
-}
-
-class CardDetails {
-  String? cardNumber;
-  String? cardExpiryMonth;
-  String? cardExpiryYear;
-  String? cardCvv;
-  String? cardHolderName;
-
-  CardDetails(
-      {this.cardNumber,
-      this.cardExpiryMonth,
-      this.cardExpiryYear,
-      this.cardCvv,
-      this.cardHolderName});
-
-  CardDetails.fromJson(Map<String, dynamic> json) {
-    cardNumber = json['cardNumber'];
-    cardExpiryMonth = json['cardExpiryMonth'];
-    cardExpiryYear = json['cardExpiryYear'];
-    cardCvv = json['cardCvv'];
-    cardHolderName = json['cardHolderName'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['cardNumber'] = cardNumber;
-    data['cardExpiryMonth'] = cardExpiryMonth;
-    data['cardExpiryYear'] = cardExpiryYear;
-    data['cardCvv'] = cardCvv;
-    data['cardHolderName'] = cardHolderName;
+    data['redirectUrl'] = redirectUrl;
+    data['redirectMode'] = redirectMode;
     return data;
   }
 }
