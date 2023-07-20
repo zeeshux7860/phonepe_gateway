@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:phonepe_gateway/model/hash.dart';
 import 'package:phonepe_gateway/model/payment_complete.dart';
 import 'package:phonepe_gateway/model/upi.dart';

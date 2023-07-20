@@ -1,6 +1,6 @@
 name: phonepe_gateway
 description: The provided code is a Flutter application that attempts to integrate the "PhonePe" payment gateway for processing payments.
-version: 0.0.2+beta
+version: 0.0.4+beta
 homepage: https://github.com/zeeshux7860/phonepe_gateway.git
 
 environment:
@@ -19,7 +19,6 @@ dependencies:
   pointycastle: ^3.7.3
   provider: ^6.0.5
   webview_flutter: ^4.2.2
-  get: ^4.6.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

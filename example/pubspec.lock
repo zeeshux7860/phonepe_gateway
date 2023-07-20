@@ -183,7 +183,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.3+beta"
+    version: "0.0.4+beta"
   plugin_platform_interface:
     dependency: transitive
     description:

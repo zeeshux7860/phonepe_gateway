@@ -137,9 +137,17 @@ class _UpiWidgetState extends State<UpiWidget> {
       PhonpePaymentGateway.instance.successPayment(data);
     } else {
       // failed payment alert
-
+      print(data.status);
       if (data.message == null) {
-        if (data.status == "FAILURE") {
+        if (data.status == "Failed") {
+          Toast.show("Payment $data.status",
+              duration: Toast.lengthShort, gravity: Toast.bottom);
+          PhonpePaymentGateway.instance.failedPayment(PaymentMethod(
+            status: data.status,
+            message: data.message,
+          ));
+          back();
+        } else if (data.status == "FAILURE") {
           Toast.show("Payment $data.status",
               duration: Toast.lengthShort, gravity: Toast.bottom);
           PhonpePaymentGateway.instance.failedPayment(PaymentMethod(
