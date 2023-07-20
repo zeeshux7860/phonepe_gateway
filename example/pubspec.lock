@@ -86,13 +86,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  get:
-    dependency: transitive
-    description:
-      name: get
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.6.5"
   http:
     dependency: transitive
     description:
@@ -190,7 +183,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.2+beta"
+    version: "0.0.3+beta"
   plugin_platform_interface:
     dependency: transitive
     description:
