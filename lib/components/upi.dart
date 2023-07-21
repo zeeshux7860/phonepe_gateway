@@ -137,7 +137,6 @@ class _UpiWidgetState extends State<UpiWidget> {
       PhonpePaymentGateway.instance.successPayment(data);
     } else {
       // failed payment alert
-      print(data.status);
       if (data.message == null) {
         if (data.status == "Failed") {
           Toast.show("Payment $data.status",

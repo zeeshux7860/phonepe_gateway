@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:phonepe_gateway/model/phonepe_config.dart';
 import 'package:phonepe_gateway/model/phonepe_params_upi.dart';
 import 'package:phonepe_gateway/phonepe_ui.dart';
-import 'package:phonepe_gateway/web_view/view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -45,8 +44,7 @@ class _PayUIState extends State<PayUI> {
   void initState() {
     PhonpePaymentGateway.instance.init(
         config: PhonePeConfig(
-            redirectUrl:
-                "https://typedwebhook.tools/webhook/09977847-b2f5-4b46-acc0-e3125301e94d",
+            redirectUrl: "http://127.0.0.1/test/view",
             baseUrl: "http://127.0.0.1/test",
             appName: "PhonePe Test App",
             callBackUrl:

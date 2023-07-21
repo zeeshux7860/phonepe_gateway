@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:phonepe_gateway/model/card_model.dart';
 import 'package:phonepe_gateway/model/hash.dart';
 import 'package:phonepe_gateway/model/payment_complete.dart';
 import 'package:phonepe_gateway/model/upi.dart';
@@ -90,16 +92,54 @@ class PhonepeGateway {
             packageName: hashRequest.packageName);
         return PaymentMethod.fromJson(jsonDecode(data!));
       } else {
-        await Navigator.push(context!, CupertinoPageRoute(
+        var data = await Navigator.push(context!, CupertinoPageRoute(
           builder: (context) {
             return WebViewExample(
                 url: hashResponse.data!.instrumentResponse!.redirectInfo!.url!);
           },
         ));
-        return PaymentMethod.fromJson({
-          "Status": "Failed",
-          "Message": "Something went to wrongs",
-        });
+        if (data != null) {
+          var py = PaymentWithCardModel.fromJson(json.decode(data));
+          var paymentData = PaymentMethod(
+              approvalRefNo: py.providerReferenceId,
+              message: py.code,
+              status: py.code == "PAYMENT_SUCCESS"
+                  ? "Success"
+                  : py.code == "PAYMENT_ERROR"
+                      ? "Failed"
+                      : py.code,
+              txnId: py.transactionId,
+              response: py.code == "PAYMENT_SUCCESS"
+                  ? "Success"
+                  : py.code == "PAYMENT_ERROR"
+                      ? "Failed"
+                      : py.code);
+          // debugPrint(paymentData.toJson().toString());
+          return paymentData;
+        } else {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Text("Transation Cancelled"),
+                    content: const Text("ERROR"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Toast.show("Payment Cancelled.",
+                              duration: Toast.lengthShort,
+                              gravity: Toast.bottom);
+
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Yes"),
+                      ),
+                    ],
+                  ));
+          PhonpePaymentGateway.instance
+              .cancelPayment("Payment Cancelled by User.");
+          return PaymentMethod();
+        }
       }
     } else {
       Toast.show(hashResponse.message!,

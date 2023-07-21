@@ -60,27 +60,33 @@ class _CreditDebitCardState extends State<CreditDebitCard> {
                   saltIndex: PhonpePaymentGateway
                       .instance.phonePeConfig.saltIndex!
                       .toString()));
-          if (data.status == "SUCCESS") {
+          if (data.status == "Success") {
             PhonpePaymentGateway.instance.successPayment(data);
             back();
           } else {
-            // failed payment alert
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text("Payment Failed"),
-                    content: Text(data.message.toString()),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Ok"))
-                    ],
-                  );
-                });
-            PhonpePaymentGateway.instance.failedPayment(data);
+            if (data.status == null) {
+            } else {
+              // failed payment alert
+              showDialog(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Payment Failed"),
+                      content: Text(data.message.toString()),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Ok"))
+                      ],
+                    );
+                  });
+
+              PhonpePaymentGateway.instance.failedPayment(data);
+            }
           }
         },
         leading: const SizedBox(height: 40, child: Icon(Icons.credit_card)),
