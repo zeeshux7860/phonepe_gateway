@@ -14,3 +14,7 @@
 ## 0.0.4+beta
 
 * TODO: fix success upi payment || card and netbaning is not complete
+
+## 0.0.5+beta
+
+* TODO: fix success upi payment || not complete its Testing purpose
