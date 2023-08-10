@@ -86,7 +86,7 @@ class _PhonePeUIState extends State<PhonePeUI> {
               ),
               child: Center(
                 child: Text(
-                  "₹ ${(widget.params.amount! / 100)}",
+                  "₹ ${(widget.params.amount!)}",
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
